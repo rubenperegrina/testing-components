@@ -7,5 +7,13 @@ import { Person } from 'src/app/models/person.model';
   styleUrls: ['./people.component.scss']
 })
 export class PeopleComponent {
-  person: Person = new Person('Rubén', 'Peregrina', 32, 1, 1);
+  people: Person[] = [
+    new Person('Rubén', 'Peregrina', 23, 1, 1),
+    new Person('Albert', 'Peregrina', 12, 2, 3),
+  ];
+  selectedPerson: Person | null = null;
+
+  choose(person: Person) {
+    this.selectedPerson = person;
+  }
 }
