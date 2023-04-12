@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Product } from './../../models/product.model';
-
 import { ProductsService } from './../../services/product.service';
 
 @Component({
@@ -11,6 +10,9 @@ import { ProductsService } from './../../services/product.service';
 export class ProductsComponent implements OnInit {
 
   products: Product[] = [];
+  limit = 10;
+  offset = 0;
+  status: 'loading' | 'success' | 'error' | 'init' = 'init';
 
   constructor(
     private productsService: ProductsService
@@ -21,10 +23,12 @@ export class ProductsComponent implements OnInit {
   }
 
   getAllProducts() {
-    this.productsService.getAll()
-    .subscribe(products => {
-      this.products = products;
-    });
+    this.status = 'loading';
+    this.productsService.getAll(this.limit, this.offset)
+      .subscribe(products => {
+        this.products = [...this.products, ...products];
+        this.offset += this.limit;
+        this.status = 'success';
+      });
   }
-
 }
