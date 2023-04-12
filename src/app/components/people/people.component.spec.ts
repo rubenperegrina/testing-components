@@ -1,9 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { PeopleComponent } from './people.component';
-import { PersonComponent } from './../person/person.component';
-import { Person } from './../../models/person.model';
 import { By } from '@angular/platform-browser';
+import { Person } from './../../models/person.model';
+import { PersonComponent } from './../person/person.component';
+import { PeopleComponent } from './people.component';
 
 describe('PeopleComponent', () => {
   let component: PeopleComponent;
@@ -37,5 +36,27 @@ describe('PeopleComponent', () => {
     const debugElement = fixture.debugElement.queryAll(By.css('app-person'));
     // Assert
     expect(debugElement.length).toEqual(2);
+  });
+
+  it('should raise seleted event when clicked', () => {
+    // Arrange
+    const buttonDe = fixture.debugElement.query(By.css('app-person .btn-choose'));
+    // Act
+    buttonDe.triggerEventHandler('click', null);
+    fixture.detectChanges();
+    // Assert
+    expect(component.selectedPerson).toEqual(component.people[0]);
+  });
+
+  it('should render the selectedPerson', () => {
+    // Arrange
+    const buttonDe = fixture.debugElement.query(By.css('app-person .btn-choose'));
+    // Act
+    buttonDe.triggerEventHandler('click', null);
+    fixture.detectChanges();
+    const liDe = fixture.debugElement.query(By.css('.selectedPerson ul > li'));
+    // Assert
+    expect(component.selectedPerson).toEqual(component.people[0]);
+    expect(liDe.nativeElement.textContent).toContain(component.selectedPerson?.name);
   });
 });
