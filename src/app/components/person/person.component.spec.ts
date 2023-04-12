@@ -1,4 +1,4 @@
-import { DebugElement } from '@angular/core';
+import { Component, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Person } from 'src/app/models/person.model';
@@ -81,22 +81,23 @@ describe('PersonComponent', () => {
     expect(buttonEl.textContent).toContain(expectMsg);
   });
 
-  it('should raise selected event when do click', () => {
+  it('should raise selcted event when do click', () => {
     // Arrange
     const expectPerson = new Person('Juan', 'Perez', 30, 120, 1.65);
     component.person = expectPerson;
     const buttonDe = fixture.debugElement.query(By.css('button.btn-choose'));
 
     let selectedPerson: Person | undefined;
-    component.onSelected.subscribe(person => {
-      selectedPerson = person;
-    })
+    component.onSelected
+      .subscribe(person => {
+        selectedPerson = person;
+      });
     // Act
     buttonDe.triggerEventHandler('click', null);
     fixture.detectChanges();
     // Assert
     expect(selectedPerson).toEqual(expectPerson);
-  })
+  });
 });
 
 @Component({
@@ -153,7 +154,3 @@ describe('PersonComponent from HostComponent', () => {
     expect(component.selectedPerson).toEqual(component.person);
   })
 });
-
-function Component(arg0: { template: string; }): (target: typeof HostComponent) => void | typeof HostComponent {
-  throw new Error('Function not implemented.');
-}
