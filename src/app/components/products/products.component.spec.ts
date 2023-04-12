@@ -1,6 +1,7 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { defer, of } from 'rxjs';
 
+import { By } from '@angular/platform-browser';
 import { generateManyProducts } from './../../models/product.mock';
 import { ProductsService } from './../../services/product.service';
 import { ValueService } from './../../services/value.service';
@@ -51,6 +52,7 @@ fdescribe('ProductsComponent', () => {
       productService.getAll.and.returnValue(of(productsMock));
       const countPrev = component.products.length;
       // Act
+      // CHALLENGE: Don't call method directly, call to call across the clicks events
       component.getAllProducts();
       fixture.detectChanges();
       // Assert
@@ -62,6 +64,7 @@ fdescribe('ProductsComponent', () => {
       const productsMock = generateManyProducts(10);
       productService.getAll.and.returnValue(defer(() => Promise.resolve(productsMock)));
       // Act
+      // CHALLENGE: Don't call method directly, call to call across the clicks events
       component.getAllProducts();
       fixture.detectChanges();
 
@@ -77,6 +80,7 @@ fdescribe('ProductsComponent', () => {
       // Arrange
       productService.getAll.and.returnValue(defer(() => Promise.reject('error')));
       // Act
+      // CHALLENGE: Don't call method directly, call to call across the clicks events
       component.getAllProducts();
       fixture.detectChanges();
 
@@ -102,6 +106,21 @@ fdescribe('ProductsComponent', () => {
       expect(component.rta).toEqual(mockMsg);
       expect(valueService.getPromiseValue).toHaveBeenCalled();
     });
-  })
 
+    it('should show "my mock string" in <p> when btn was clicked', fakeAsync(() => {
+      // Arrange
+      const mockMsg = 'my mock string';
+      valueService.getPromiseValue.and.returnValue(Promise.resolve(mockMsg));
+      const btnDe = fixture.debugElement.query(By.css('.btn-promise'));
+      // Act
+      btnDe.triggerEventHandler('click', null);
+      tick();
+      fixture.detectChanges();
+      const rtaDe = fixture.debugElement.query(By.css('p.rta'));
+      // Assert
+      expect(component.rta).toEqual(mockMsg);
+      expect(valueService.getPromiseValue).toHaveBeenCalled();
+      expect(rtaDe.nativeElement.textContent).toEqual(mockMsg);
+    }));
+  })
 });
